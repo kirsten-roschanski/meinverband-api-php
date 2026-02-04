@@ -5,6 +5,7 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 ## [1.0.1] - 2026-02-04
 
 ### Added
+
 - **fetch_and_save.php** - Neues Test-Skript zum Abrufen und Speichern von API-Daten
   - Holt Mitglieder via `$api->mitglied()->getAll()`
   - Holt Vereine via `$api->verein()->getAll()`
@@ -12,9 +13,9 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
   - Lädt `.env.local` Konfiguration automatisch
   - Zeigt Fortschritt und Dateigrößen an
   - Umfassende Fehlerbehandlung
-  - Getestet mit 217 Mitgliedern erfolgreich ✅
 
 ### Changed
+
 - **ApiClient.php** - `parseCsvData()` Methode optimiert
   - Verwendung von `fgetcsv()` statt `explode()` für robusteres CSV-Parsing
   - Unterstützt nun korrekt Zeilenumbrüche innerhalb von angeführten Feldern
@@ -22,11 +23,13 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
   - Verbesserte Performance durch Memory-Stream-Nutzung
 
 ### Fixed
+
 - CSV-Parsing-Fehler bei Feldern mit Zeilenumbrüchen in Anführungszeichen
   - Altes Problem: `explode("\n")` konnte mehrzeilige Felder nicht korrekt verarbeiten
   - Neue Lösung: `fgetcsv()` mit Memory-Stream für korrekte CSV-Format-Verarbeitung
 
 ### Security
+
 - **.gitignore** - `/tmp/` Verzeichnis hinzugefügt
   - Verhindert, dass temporäre/Test-Daten in Git committed werden
   - Schützt sensible lokale Testdaten
@@ -39,27 +42,3 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 - Endpoints: Mitglied, Verein, Api
 - Config-Management mit .env.local Support
 - PHPUnit Tests
-
-## Verwendung
-
-### fetch_and_save.php ausführen
-```bash
-php fetch_and_save.php
-```
-
-Erwartet folgende Umgebungsvariablen in `.env.local`:
-- `MEINVERBAND_API_URL`
-- `MEINVERBAND_API_USER`
-- `MEINVERBAND_API_PASSWORD`
-
-Erzeugt JSON-Dateien in `/tmp/`:
-- `tmp/mitglieder.json` - Liste aller Mitglieder (csv_count)
-- `tmp/vereine.json` - Liste aller Vereine
-
-## Getestete Daten
-
-### Version 1.0.1
-- ✅ 217 Mitglieder erfolgreich abgerufen und geparst
-- ✅ Vereine erfolgreich abgerufen und geparst
-- ✅ CSV-Parsing mit Zeilenumbrüchen funktioniert korrekt
-- ✅ parsed_data Array korrekt gefüllt

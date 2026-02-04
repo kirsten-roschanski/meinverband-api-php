@@ -239,6 +239,46 @@ $api = new MeinVerbandApi(
 
 ## Entwicklung
 
+### fetch_and_save.php - Test und Datenexport
+
+Das Projekt enthält ein Utility-Skript zum Abrufen und Speichern von API-Daten:
+
+```bash
+php fetch_and_save.php
+```
+
+**Was macht das Skript:**
+- Ruft alle Mitglieder über `mitglied()->getAll()` ab
+- Ruft alle Vereine über `verein()->getAll()` ab
+- Speichert beide als JSON-Dateien im `/tmp/` Verzeichnis
+- Zeigt Fortschritt, Dateigrößen und Anzahl der Datensätze
+- Lädt Konfiguration automatisch aus `.env.local`
+
+**Ausgabedateien:**
+- `tmp/mitglieder.json` - Mitgliederdaten mit `parsed_data` Array
+- `tmp/vereine.json` - Vereinsdaten mit `parsed_data` Array
+
+**Beispiel-Ausgabe:**
+```
+📡 Fetching data from MeinVerband API...
+
+1️⃣ Fetching Mitglieder...
+✅ Mitglieder saved to: /tmp/mitglieder.json
+   Records: 217
+
+2️⃣ Fetching Vereine...
+✅ Vereine saved to: /tmp/vereine.json
+   Records: 4
+
+📁 Files in tmp directory:
+   - mitglieder.json (45.3 KB)
+   - vereine.json (12.7 KB)
+
+✨ Data fetch completed successfully!
+```
+
+**Hinweis:** Das `/tmp/` Verzeichnis ist in `.gitignore` ausgeschlossen und wird nicht ins Git-Repository committed.
+
 ### Abhängigkeiten installieren
 
 ```bash
