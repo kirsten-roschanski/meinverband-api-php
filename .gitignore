@@ -9,3 +9,4 @@
 /.env.local
 /logs/
 *.log
+/tmp/

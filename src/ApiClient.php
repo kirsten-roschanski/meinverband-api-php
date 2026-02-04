@@ -192,6 +192,7 @@ class ApiClient
 
     /**
      * Parse CSV data into associative array
+     * Uses fgetcsv to properly handle quoted fields containing newlines
      */
     private function parseCsvData(string $csvData): array
     {
@@ -199,33 +200,44 @@ class ApiClient
             return [];
         }
 
-        $lines = explode("\n", trim($csvData));
-        if (empty($lines)) {
+        // Use memory stream for fgetcsv which properly handles CSV format with quotes and newlines
+        $stream = fopen('php://memory', 'r+');
+        if ($stream === false) {
+            return [];
+        }
+        
+        fwrite($stream, $csvData);
+        rewind($stream);
+
+        // Read header row
+        $headers = fgetcsv($stream, null, ';');
+        if ($headers === null || $headers === false) {
+            fclose($stream);
             return [];
         }
 
-        // Parse header row
-        $headers = str_getcsv(array_shift($lines), ';');
+        // Trim and clean headers (remove quotes)
         $headers = array_map(function($header) {
             return trim($header, '"');
         }, $headers);
 
         $data = [];
-        foreach ($lines as $line) {
-            if (trim($line) === '') {
-                continue;
-            }
-            
-            $values = str_getcsv($line, ';');
-            $values = array_map(function($value) {
-                return trim($value, '"');
-            }, $values);
-            
-            if (count($values) === count($headers)) {
-                $data[] = array_combine($headers, $values);
+        while (($values = fgetcsv($stream, null, ';')) !== false) {
+            // Skip empty lines
+            if (count(array_filter($values, fn($v) => trim($v) !== '')) > 0) {
+                // Trim and clean values (remove quotes)
+                $values = array_map(function($value) {
+                    return trim($value, '"');
+                }, $values);
+
+                // Only add if column count matches header count
+                if (count($values) === count($headers)) {
+                    $data[] = array_combine($headers, $values);
+                }
             }
         }
 
+        fclose($stream);
         return $data;
     }
 
